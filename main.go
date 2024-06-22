@@ -1,41 +1,37 @@
 package main
 
 import (
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
 	"time"
 )
+
 type Film struct {
-	Title string
+	Title    string
 	Director string
 }
+
 func main() {
+	temp := template.Must(template.ParseFiles("index.html"))
 
 	greeting := func(w http.ResponseWriter, r *http.Request) {
 		// methodType := r.Method
 		films := map[string][]Film{
-			"Films" : {
-				{Title : "Inside out",Director: "Kalsey Mann"},
-				{Title : "Chandu Champion",Director: "Kabir Khan"},
+			"Films": {
+				{Title: "Inside out", Director: "Kalsey Mann"},
+				{Title: "Chandu Champion", Director: "Kabir Khan"},
 			},
 		}
 
-		temp := template.Must(template.ParseFiles("index.html"))
-		temp.Execute(w,films); // renders the html page
+		temp.Execute(w, films) // renders the html page
 	}
 
-	requestHandler:= func(w http.ResponseWriter, r *http.Request){
-		time.Sleep(2 *time.Second)
+	requestHandler := func(w http.ResponseWriter, r *http.Request) {
+		time.Sleep(2 * time.Second)
 		title := r.PostFormValue("title")
 		director := r.PostFormValue("director")
-
-		htmlStr := fmt.Sprintf("<li class='list-group-item bg-primary text-white'> %s - %s </li>",title,director);
-
-		temp,_ := template.New("list-item").Parse(htmlStr);
-		temp.Execute(w,nil);
-
+		temp.ExecuteTemplate(w, "file-director-list", Film{Title: title, Director: director})
 	}
 	http.HandleFunc("/", greeting)
 	http.HandleFunc("/add-film/", requestHandler)

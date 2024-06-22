@@ -17,7 +17,7 @@
         
             <ul class="list-group fs-5 me-5" id="film-list">
                 {{ range .Films }}
-                {{ block "film-list-element" .}}
+                    {{ block "file-director-list" . }}
                     <li class="list-group-item bg-primary text-white">{{ .Title }} - {{ .Director }}</li>
                 {{ end }}
                 {{ end }}
